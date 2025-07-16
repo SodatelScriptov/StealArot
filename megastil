@@ -106,5 +106,3 @@ end)
 -- Клики по кнопкам
 toggleButton.MouseButton1Click:Connect(toggleMenu)
 noclipButton.MouseButton1Click:Connect(toggleNoclip)
-
-Bypassgame:(StealABrainrot)()
