@@ -1,0 +1,110 @@
+local player = game:GetService("Players").LocalPlayer
+local gui = Instance.new("ScreenGui")
+gui.Name = "SecretMenu"
+gui.Parent = player:WaitForChild("PlayerGui")
+
+-- Основной фрейм (меню)
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0.07, 0, 0.07, 0) -- Изначально маленький кружок
+mainFrame.Position = UDim2.new(0.01, 0, 0.3, 0)
+mainFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+mainFrame.BorderSizePixel = 0
+mainFrame.ClipsDescendants = true
+mainFrame.Parent = gui
+
+-- Круглая кнопка (☰)
+local toggleButton = Instance.new("TextButton")
+toggleButton.Size = UDim2.new(1, 0, 1, 0)
+toggleButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+toggleButton.Text = "☰"
+toggleButton.TextColor3 = Color3.new(1, 1, 1)
+toggleButton.TextScaled = true
+toggleButton.BorderSizePixel = 0
+toggleButton.Parent = mainFrame
+
+-- Делаем кнопку круглой
+local uiCorner = Instance.new("UICorner")
+uiCorner.CornerRadius = UDim.new(1, 0)
+uiCorner.Parent = toggleButton
+
+-- Контент меню (появляется при открытии)
+local menuContent = Instance.new("Frame")
+menuContent.Size = UDim2.new(1, 0, 1, 0)
+menuContent.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+menuContent.Position = UDim2.new(1, 0, 0, 0) -- Изначально скрыто справа
+menuContent.Parent = mainFrame
+
+-- Кнопка NoClip
+local noclipButton = Instance.new("TextButton")
+noclipButton.Size = UDim2.new(0.9, 0, 0.2, 0)
+noclipButton.Position = UDim2.new(0.05, 0, 0.1, 0)
+noclipButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+noclipButton.Text = "NoClip: OFF"
+noclipButton.TextColor3 = Color3.fromRGB(255, 100, 100)
+noclipButton.BorderSizePixel = 0
+noclipButton.Parent = menuContent
+
+-- Переменные
+local isMenuOpen = false
+local isNoclipOn = false
+
+-- Анимация открытия/закрытия
+local function toggleMenu()
+    isMenuOpen = not isMenuOpen
+    if isMenuOpen then
+        mainFrame:TweenSize(
+            UDim2.new(0.2, 0, 0.3, 0), -- Развернутый размер
+            Enum.EasingDirection.Out,
+            Enum.EasingStyle.Quad,
+            0.2
+        )
+        menuContent:TweenPosition(
+            UDim2.new(0, 0, 0, 0), -- Показываем контент
+            Enum.EasingDirection.Out,
+            Enum.EasingStyle.Quad,
+            0.2
+        )
+    else
+        mainFrame:TweenSize(
+            UDim2.new(0.07, 0, 0.07, 0), -- Обратно в кружок
+            Enum.EasingDirection.Out,
+            Enum.EasingStyle.Quad,
+            0.2
+        )
+        menuContent:TweenPosition(
+            UDim2.new(1, 0, 0, 0), -- Скрываем контент
+            Enum.EasingDirection.Out,
+            Enum.EasingStyle.Quad,
+            0.2
+        )
+    end
+end
+
+-- Включение NoClip
+local function toggleNoclip()
+    isNoclipOn = not isNoclipOn
+    if isNoclipOn then
+        noclipButton.Text = "NoClip: ON"
+        noclipButton.TextColor3 = Color3.fromRGB(100, 255, 100)
+    else
+        noclipButton.Text = "NoClip: OFF"
+        noclipButton.TextColor3 = Color3.fromRGB(255, 100, 100)
+    end
+end
+
+-- Логика NoClip
+game:GetService("RunService").Stepped:Connect(function()
+    if isNoclipOn and player.Character then
+        for _, part in pairs(player.Character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = false
+            end
+        end
+    end
+end)
+
+-- Клики по кнопкам
+toggleButton.MouseButton1Click:Connect(toggleMenu)
+noclipButton.MouseButton1Click:Connect(toggleNoclip)
+
+Bypassgame:(StealABrainrot)()
